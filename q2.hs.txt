@@ -1,0 +1,9 @@
+import RegExp -- do not remove
+import Hidden -- do not remove
+
+-- TODO: put your definitions here
+rA,rB,rC :: RegExp
+rA = parseRE "(b|(ab))*(a|eps)"
+rB = parseRE "(b|ab*a)*"
+rC = parseRE "(b|(ab)b*(ab))*(((ab)b*)a|eps)"
+--rC = parseRE "((eps|ab)b*)((ab)b*(ab)b*)*(ab*a)"

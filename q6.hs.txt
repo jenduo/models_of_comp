@@ -1,0 +1,33 @@
+import DPDA
+import VisDPDA
+import RunDPDA  -- For testing; do not remove
+import Hidden   -- For testing; do not remove
+
+dpdaL, dpdaR :: DPDA
+sigma = "ab"
+dpdaL = ([0,1,2], "abc", "abAB", delta, 0, [0])
+    where
+      delta = [ ((0,'a',eps), (1,'A'))
+              , ((1,'a',eps), (1,'a'))
+              , ((0,'c',eps), (0,eps))
+              , ((1,'b','a'), (1,eps))
+              , ((1,'b','A'), (0,eps))
+              , ((2,'b',eps), (2,'b'))
+              , ((2,'a','b'), (2,eps))
+              , ((2,'a','B'), (0,eps))
+              , ((1,'c',eps), (1,eps))
+              , ((2,'c',eps), (2,eps))
+              , ((0,'b',eps), (2,'B'))]
+
+dpdaR = ([0,1,2,3,4,5], "abc", "ab1", delta, 0, [5])
+    where
+      delta = [ ((0,'a',eps), (1,'1'))
+              , ((1,'a',eps), (1,'a'))
+              , ((1,'b',eps), (3,'a'))
+              , ((2,'b',eps), (3,eps))
+              , ((3,'b','a'), (2,eps))
+              , ((3,'b','1'), (4,eps))
+              , ((4,'b',eps), (4,'b'))
+              , ((4,'c','b'), (5,eps))
+              , ((5,'c','b'), (5,eps))
+              , ((0,'b',eps), (3,'1'))]

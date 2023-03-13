@@ -1,0 +1,46 @@
+-- we provide the same files as in assessed worksheet 4
+import DFA
+import NFA
+import VisDFA
+-- we provide solutions to worksheet 4 problems, you may find useful
+import HiddenAlgorithms (determiniseNFA, minimiseDFA)
+-- one more module is required for testing purposes
+import Hidden
+-- TODO: Complete this function
+
+ans :: DFA -> NFA
+ans(qs, xs, ts, q0, as)= (qs', xs', ts', [q0'], as')
+                where qs' = qs ++ [q0']
+                      xs' = xs
+                      ts' = [((q0',b),c)|((a,b),c)<-(nextStates q0 ts)] ++ [t|state<-(qs),t<-(nextNextStates state ts)]
+                      q0' = ((maximum qs) +1)
+                      as' = as ++ [x|x<-qs, y<-(adj x ts),y`elem`(as),x/=y]++[q0'|q0 `elem` as]
+
+
+-- ((a,b),c) -> each transn will be indexed like this
+
+--adj == given a start state and a list of transn, it will output the the states it can go to from there
+adj :: Int -> [Transn]-> [Int]
+adj start list = [c|((a,b),c)<-list,a==start]
+
+--nextStates == given a state and a list of transn, it will give the trans for all the next states
+nextStates :: Int -> [Transn] ->[Transn]
+nextStates state list = [((a,b),c)|((a,b),c)<-list,a==state]
+
+--nextNextStates == given a state a list of transn, it will connect this state to the state its next state can reach
+--ie state 2 can connect to state 4 if there exists some ((2,'x'),3) and ((3,'y'),4) via ((2,'y'),4)
+nextNextStates :: Int -> [Transn] ->[Transn]
+nextNextStates state list = [((state,b),c)|adj <-[c|((a,b),c)<-list,a==state],((a,b),c)<-(nextStates adj list)]
+
+
+test :: DFA
+test = ([0,1,2], "abc", [((0,'a'),1),((1,'b'),2),((2,'c'),2)], 0, [1,2])
+
+slice :: DFA -> DFA
+slice dfa = minimiseDFA (determiniseNFA(ans dfa))
+
+testing:: DFA
+testing = slice test
+
+-- ++ [((a,b),c)|state<-(selfStates ts), ((a,b),c)<-ts, a==state || c==state]
+
